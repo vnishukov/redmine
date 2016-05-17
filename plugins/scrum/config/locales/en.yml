@@ -86,6 +86,7 @@ en:
   label_setting_story_points_custom_field: "Story points custom field"
   label_setting_task_statuses: "Task statuses for Sprint board"
   label_setting_verification_activities: "Verification activities"
+  label_setting_adjust_effort_automatically: "Adjust task effort automatically"
   label_scrum: "Scrum"
   label_sprint: "Sprint"
   label_sprint_board: "Sprint board"
