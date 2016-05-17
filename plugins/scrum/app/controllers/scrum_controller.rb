@@ -83,7 +83,7 @@ class ScrumController < ApplicationController
       if params[:time_entry][:adjust_effort].present?
         if (pending_effort = @issue.pending_efforts.last).present?
           effort = (params[:time_entry][:adjust_effort] == 'manual') ? params[:time_entry][:pending_efforts] : (pending_effort.effort - params[:time_entry][:hours].to_f)
-          pending_effort.update_attribute(:effort, effort) if effort.to_f >= 0
+          pending_effort.update_attribute(:effort, effort.to_f >= 0 ? effort : 0)
         end
       end
     rescue Exception => @exception
