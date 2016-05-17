@@ -15,9 +15,9 @@
 
     <p>
       <label><%= l(:field_pending_effort) %>:</label>
-      <%= f.radio_button 'adjust_effort', 'automatically' %><%= l(:label_adjust_effort_automatically) %>
+      <%= f.radio_button 'adjust_effort', 'automatically', checked: Scrum::Setting.adjust_effort_automatically %><%= l(:label_adjust_effort_automatically) %>
       <br>
-      <%= f.radio_button 'adjust_effort', 'manual' %><%= l(:label_manual_set_effort_to) %>
+      <%= f.radio_button 'adjust_effort', 'manual', checked: !Scrum::Setting.adjust_effort_automatically %><%= l(:label_manual_set_effort_to) %>
       <%= f.text_field :pending_efforts, :value => @issue.pending_effort, :size => 3, :required => true %>
       <%= l(:field_hours).downcase %>
     </p>
