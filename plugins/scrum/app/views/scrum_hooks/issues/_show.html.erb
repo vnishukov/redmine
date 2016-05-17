@@ -1,0 +1,22 @@
+<%- if @project.module_enabled?(:scrum) -%>
+  <tr>
+    <th><%=l(:label_sprint)%>:</th>
+    <td><%= link_to(h(@issue.sprint.name), @issue.sprint.is_product_backlog ? project_product_backlog_index_path(@project) : @issue.sprint) unless @issue.sprint.nil? %></td>
+    <%- if @issue.is_pbi? -%>
+      <th><%=l(:field_position)%>:</th>
+      <td><%= @issue.position %></td>
+    <%- elsif @issue.is_task? -%>
+      <th><%=l(:field_pending_effort)%>:</th>
+      <td>
+        <%- if @issue.pending_effort -%>
+          <%= render :partial => 'scrum_hooks/issues/pending_effort',
+                     :locals => {:issue => @issue} %>
+          <%- if User.current.allowed_to?(:edit_issues, @issue.project) -%>
+            <%= render :partial => 'scrum_hooks/issues/edit_pending_effort',
+                       :locals => {:issue => @issue} %>
+          <%- end -%>
+        <%- end -%>
+      </td>
+    <%- end -%>
+  </tr>
+<%- end -%>
