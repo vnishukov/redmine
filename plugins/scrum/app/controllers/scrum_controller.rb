@@ -85,7 +85,9 @@ class ScrumController < ApplicationController
         effort = params[:time_entry][:pending_efforts]
         pending_effort.update_attribute(:effort, effort) if (effort.to_i >= 0 && pending_effort.present?)
       else
-
+        effort = params[:time_entry][:pending_efforts].to_i - params[:time_entry][:hours].to_i
+        pending_effort = @issue.pending_efforts.last
+        pending_effort.update_attribute(:effort, effort) if (effort.to_i >= 0 && pending_effort.present?)
       end
     rescue Exception => @exception
       logger.error("Exception: #{@exception.inspect}")
