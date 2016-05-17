@@ -134,6 +134,8 @@ en:
     other: "Use all PBIs from last %{count} Sprints to calculate the velocity"
   label_velocity_custom: "Custom value:"
   label_velocity_only_scheduled_pbis: "Only scheduled ones"
+  label_adjust_effort_automatically: 'Adjust automatically'
+  label_manual_set_effort_to: 'Set to'
   notice_pbi_created: "The product backlog item was successfully created"
   notice_sprint_has_issues: "The Sprint has issues"
   notice_task_created: "The task was successfully created"
