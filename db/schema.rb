@@ -306,6 +306,8 @@ ActiveRecord::Schema.define(version: 20151031095005) do
     t.integer  "rgt",              limit: 4
     t.boolean  "is_private",                     default: false, null: false
     t.datetime "closed_on"
+    t.integer  "sprint_id",        limit: 4
+    t.integer  "position",         limit: 4
   end
 
   add_index "issues", ["assigned_to_id"], name: "index_issues_on_assigned_to_id", using: :btree
@@ -313,9 +315,11 @@ ActiveRecord::Schema.define(version: 20151031095005) do
   add_index "issues", ["category_id"], name: "index_issues_on_category_id", using: :btree
   add_index "issues", ["created_on"], name: "index_issues_on_created_on", using: :btree
   add_index "issues", ["fixed_version_id"], name: "index_issues_on_fixed_version_id", using: :btree
+  add_index "issues", ["position"], name: "issues_position", using: :btree
   add_index "issues", ["priority_id"], name: "index_issues_on_priority_id", using: :btree
   add_index "issues", ["project_id"], name: "issues_project_id", using: :btree
   add_index "issues", ["root_id", "lft", "rgt"], name: "index_issues_on_root_id_and_lft_and_rgt", using: :btree
+  add_index "issues", ["sprint_id"], name: "issues_sprint_id", using: :btree
   add_index "issues", ["status_id"], name: "index_issues_on_status_id", using: :btree
   add_index "issues", ["tracker_id"], name: "index_issues_on_tracker_id", using: :btree
 
@@ -412,6 +416,15 @@ ActiveRecord::Schema.define(version: 20151031095005) do
     t.string  "salt",       limit: 255, null: false
   end
 
+  create_table "pending_efforts", force: :cascade do |t|
+    t.integer "issue_id", limit: 4,  null: false
+    t.date    "date",                null: false
+    t.float   "effort",   limit: 24
+  end
+
+  add_index "pending_efforts", ["date"], name: "pending_efforts_date", using: :btree
+  add_index "pending_efforts", ["issue_id"], name: "pending_efforts_issue", using: :btree
+
   create_table "projects", force: :cascade do |t|
     t.string   "name",               limit: 255,   default: "",    null: false
     t.text     "description",        limit: 65535
@@ -426,9 +439,11 @@ ActiveRecord::Schema.define(version: 20151031095005) do
     t.integer  "rgt",                limit: 4
     t.boolean  "inherit_members",                  default: false, null: false
     t.integer  "default_version_id", limit: 4
+    t.integer  "product_backlog_id", limit: 4
   end
 
   add_index "projects", ["lft"], name: "index_projects_on_lft", using: :btree
+  add_index "projects", ["product_backlog_id"], name: "projects_product_backlog_id", using: :btree
   add_index "projects", ["rgt"], name: "index_projects_on_rgt", using: :btree
 
   create_table "projects_trackers", id: false, force: :cascade do |t|
@@ -505,6 +520,34 @@ ActiveRecord::Schema.define(version: 20151031095005) do
   end
 
   add_index "settings", ["name"], name: "index_settings_on_name", using: :btree
+
+  create_table "sprint_efforts", force: :cascade do |t|
+    t.integer "sprint_id", limit: 4,  null: false
+    t.integer "user_id",   limit: 4,  null: false
+    t.date    "date",                 null: false
+    t.float   "effort",    limit: 24
+  end
+
+  add_index "sprint_efforts", ["date"], name: "sprint_efforts_date", using: :btree
+  add_index "sprint_efforts", ["sprint_id"], name: "sprint_efforts_sprint", using: :btree
+  add_index "sprint_efforts", ["user_id"], name: "sprint_efforts_user", using: :btree
+
+  create_table "sprints", force: :cascade do |t|
+    t.string   "name",               limit: 255,                   null: false
+    t.text     "description",        limit: 65535
+    t.date     "sprint_start_date",                                null: false
+    t.date     "sprint_end_date",                                  null: false
+    t.integer  "user_id",            limit: 4,                     null: false
+    t.integer  "project_id",         limit: 4,                     null: false
+    t.datetime "created_on"
+    t.datetime "updated_on"
+    t.boolean  "is_product_backlog",               default: false
+  end
+
+  add_index "sprints", ["is_product_backlog"], name: "sprints_is_product_backlog", using: :btree
+  add_index "sprints", ["name"], name: "sprints_name", using: :btree
+  add_index "sprints", ["project_id"], name: "sprints_project", using: :btree
+  add_index "sprints", ["user_id"], name: "sprints_user", using: :btree
 
   create_table "time_entries", force: :cascade do |t|
     t.integer  "project_id",  limit: 4,    null: false
