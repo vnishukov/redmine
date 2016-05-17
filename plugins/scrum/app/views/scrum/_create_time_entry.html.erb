@@ -17,8 +17,9 @@
       <label><%= l(:field_pending_effort) %>:</label>
       <%= f.radio_button 'adjust_effort', 'automatically' %><%= l(:label_adjust_effort_automatically) %>
       <br>
-      <%= f.radio_button 'adjust_effort', 'manual' %><%= l(:label_manual_set_effort_to) %>:
-      <%= f.text_field :pending_efforts, :value => @issue.pending_effort, :size => 8, :required => true %>
+      <%= f.radio_button 'adjust_effort', 'manual' %><%= l(:label_manual_set_effort_to) %>
+      <%= f.text_field :pending_efforts, :value => @issue.pending_effort, :size => 3, :required => true %>
+      <%= l(:field_hours).downcase %></label>
     </p>
 
     <p>
