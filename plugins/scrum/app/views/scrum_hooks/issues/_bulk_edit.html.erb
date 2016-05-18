@@ -1,4 +1,4 @@
-<%- if @project.module_enabled?(:scrum) -%>
+<%- if defined?(@project) and @project.module_enabled?(:scrum) -%>
   <% if @safe_attributes.include?("sprint_id") -%>
     <p>
       <label for="sprint_id"><%= l(:field_sprint) %></label>

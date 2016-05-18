@@ -22,7 +22,7 @@
       <%= render :partial => "post_its/sprint_board/custom_fields", :formats => [:html],
                  :locals => {:project => project, :issue => pbi} %>
       <div class="doers-reviewers-post-its-container">
-        <%- if pbi.blocked? -%>
+        <%- if pbi.scrum_blocked? -%>
           <div class="<%= Issue.blocked_post_it_css_class %>">
             <%= l :label_blocked %>
           </div>

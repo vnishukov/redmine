@@ -73,19 +73,12 @@ class ScrumController < ApplicationController
 
   def create_time_entry
     begin
-      time_entry = TimeEntry.new(params[:time_entry].except(:adjust_effort, :pending_efforts))
+      time_entry = TimeEntry.new(params[:time_entry])
       time_entry.project_id = @project.id
       time_entry.issue_id = @issue.id
       time_entry.user_id = params[:time_entry][:user_id]
       call_hook(:controller_timelog_edit_before_save, {:params => params, :time_entry => time_entry})
       time_entry.save!
-
-      if params[:time_entry][:adjust_effort].present?
-        if (pending_effort = @issue.pending_efforts.last).present?
-          effort = (params[:time_entry][:adjust_effort] == 'manual') ? params[:time_entry][:pending_efforts] : (pending_effort.effort - params[:time_entry][:hours].to_f)
-          pending_effort.update_attribute(:effort, effort.to_f >= 0 ? effort : 0)
-        end
-      end
     rescue Exception => @exception
       logger.error("Exception: #{@exception.inspect}")
     end
@@ -371,11 +364,12 @@ private
 
   def update_attributes(issue, params)
     issue.status_id = params[:issue][:status_id] unless params[:issue][:status_id].nil?
-    raise "New status is not allowed" unless issue.new_statuses_allowed_to.include?(issue.status)
+    raise 'New status is not allowed' unless issue.new_statuses_allowed_to.include?(issue.status)
     issue.assigned_to_id = params[:issue][:assigned_to_id] unless params[:issue][:assigned_to_id].nil?
     issue.subject = params[:issue][:subject] unless params[:issue][:subject].nil?
     issue.priority_id = params[:issue][:priority_id] unless params[:issue][:priority_id].nil?
-    issue.estimated_hours = params[:issue][:estimated_hours].gsub(",", ".") unless params[:issue][:estimated_hours].nil?
+    issue.estimated_hours = params[:issue][:estimated_hours].gsub(',', '.') unless params[:issue][:estimated_hours].nil?
+    issue.done_ratio = params[:issue][:done_ratio] unless params[:issue][:done_ratio].nil?
     issue.description = params[:issue][:description] unless params[:issue][:description].nil?
     issue.category_id = params[:issue][:category_id] if issue.safe_attribute?(:category_id) and (!(params[:issue][:category_id].nil?))
     issue.fixed_version_id = params[:issue][:fixed_version_id] if issue.safe_attribute?(:fixed_version_id) and (!(params[:issue][:fixed_version_id].nil?))

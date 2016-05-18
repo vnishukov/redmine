@@ -121,11 +121,6 @@
                       Scrum::Setting.inherit_pbi_attributes) %>
   </p>
   <p>
-    <label><%= l(:label_setting_adjust_effort_automatically) %>:</label>
-    <%= hidden_field_tag("settings[adjust_effort_automatically]", 0) %>
-    <%= check_box_tag("settings[adjust_effort_automatically]", 1, Scrum::Setting.adjust_effort_automatically) %>
-  </p>
-  <p>
     <label>
       <%= link_to("", "#", :class => "icon #{ScrumHelper::LOWEST_SPEED_ICON}") %>
       <%= l(:label_setting_lowest_speed) %>:

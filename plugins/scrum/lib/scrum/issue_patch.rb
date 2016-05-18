@@ -191,7 +191,8 @@ module Scrum
 
         def speed
           if (self.is_pbi? or self.is_task?) and (self.total_time > 0.0)
-            the_estimated_hours = self.total_estimated_hours.nil? ? 0.0 : self.total_estimated_hours
+            the_estimated_hours = (!defined?(self.total_estimated_hours) or self.total_estimated_hours.nil?) ?
+                0.0 : self.total_estimated_hours
             return ((the_estimated_hours * 100.0) / self.total_time).round
           else
             return nil
@@ -203,7 +204,7 @@ module Scrum
                   visible_custom_field_values.collect{|value| value.custom_field.id.to_s}.include?(custom_field_id))
         end
 
-        def blocked?
+        def scrum_blocked?
           if has_blocked_field? and
               !((custom_field_id = Scrum::Setting.blocked_custom_field_id).nil?) and
               !((custom_value = self.custom_value_for(custom_field_id)).nil?) and
