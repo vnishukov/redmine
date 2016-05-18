@@ -109,6 +109,12 @@
     <%= select_tag "settings[pbi_status_ids]", options, :multiple => true %>
   </p>
   <p>
+    <label><%= l(:label_setting_pending_reset_statuses) %>:</label>
+    <%- statuses = IssueStatus.all.collect{|s| [s.name, s.id]} -%>
+    <%- options = options_for_select(statuses, Scrum::Setting.effort_reset_status_ids) -%>
+    <%= select_tag "settings[effort_reset_status_ids]", options, :multiple => true %>
+  </p>
+  <p>
     <label><%= l(:label_setting_verification_activities) %>:</label>
     <%- activities = Enumeration.where(:type => "TimeEntryActivity").collect{|s| [s.name, s.id]} -%>
     <%- options = options_for_select(activities, Scrum::Setting.verification_activity_ids) -%>

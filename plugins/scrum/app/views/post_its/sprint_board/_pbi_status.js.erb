@@ -23,9 +23,14 @@
 								hideOnLoad();
 							}
 						},
-						success: function() {
+						success: function(response) {
 							ui.draggable.attr("old-status", "<%= status.id %>");
 							window["container_" + $(ui.draggable).attr("id")] = "";
+							var draggableItem = $(ui.draggable), draggableItemId = draggableItem.attr('id').split('_')[1],
+									taskIdLinkContent = '#' + draggableItemId, taskIdLink = $('a:contains(' + taskIdLinkContent + ')'),
+									finalStatuses = ['closed', 'rejected'];
+							finalStatuses.indexOf(response['new_status']) >= 0 ? taskIdLink.addClass('closed') : taskIdLink.removeClass('closed');
+							$('#pending_effort_' + draggableItemId).val(response['new_pending_effort']);
 						}
 					});
 				}

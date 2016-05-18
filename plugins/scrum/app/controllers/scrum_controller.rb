@@ -40,7 +40,7 @@ class ScrumController < ApplicationController
   end
 
   def change_pending_effort
-    @issue.pending_effort = params[:value]
+    PendingEffort.create(issue_id: @issue.id, date: Time.now, effort: params[:value].to_f)
     render :nothing => true, :status => 200
   end
 
