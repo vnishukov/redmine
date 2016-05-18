@@ -86,6 +86,7 @@ en:
   label_setting_story_points_custom_field: "Story points custom field"
   label_setting_task_statuses: "Task statuses for Sprint board"
   label_setting_verification_activities: "Verification activities"
+  label_setting_adjust_effort_automatically: "Adjust task effort automatically"
   label_scrum: "Scrum"
   label_sprint: "Sprint"
   label_sprint_board: "Sprint board"
@@ -134,6 +135,8 @@ en:
     other: "Use all PBIs from last %{count} Sprints to calculate the velocity"
   label_velocity_custom: "Custom value:"
   label_velocity_only_scheduled_pbis: "Only scheduled ones"
+  label_adjust_effort_automatically: 'Adjust automatically'
+  label_manual_set_effort_to: 'Set to'
   notice_pbi_created: "The product backlog item was successfully created"
   notice_sprint_has_issues: "The Sprint has issues"
   notice_task_created: "The task was successfully created"

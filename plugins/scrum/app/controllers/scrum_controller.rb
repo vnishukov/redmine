@@ -73,12 +73,19 @@ class ScrumController < ApplicationController
 
   def create_time_entry
     begin
-      time_entry = TimeEntry.new(params[:time_entry])
+      time_entry = TimeEntry.new(params[:time_entry].except(:adjust_effort, :pending_efforts))
       time_entry.project_id = @project.id
       time_entry.issue_id = @issue.id
       time_entry.user_id = params[:time_entry][:user_id]
       call_hook(:controller_timelog_edit_before_save, {:params => params, :time_entry => time_entry})
       time_entry.save!
+
+      if params[:time_entry][:adjust_effort].present?
+        if (pending_effort = @issue.pending_efforts.last).present?
+          effort = (params[:time_entry][:adjust_effort] == 'manual') ? params[:time_entry][:pending_efforts] : (pending_effort.effort - params[:time_entry][:hours].to_f)
+          pending_effort.update_attribute(:effort, effort.to_f >= 0 ? effort : 0)
+        end
+      end
     rescue Exception => @exception
       logger.error("Exception: #{@exception.inspect}")
     end
