@@ -27,12 +27,12 @@
         <%= render :partial => "post_its/sprint_board/custom_fields", :formats => [:html],
                    :locals => {:project => project, :issue => task} %>
         <div class="doers-reviewers-post-its-container">
-          <%- task.doers.each do |doer| -%>
+          <%- task.doers.sort_by { |k| k.created_on }.reverse.first(1).each do |doer| -%>
             <div class="<%= Issue.doer_post_it_css_class %>">
               <%= avatar(doer, :size => "14") %> <%= link_to_user doer %>
             </div>
           <%- end -%>
-          <%- task.reviewers.each do |reviewer| -%>
+          <%- task.reviewers.sort_by { |k| k.created_on }.reverse.first(3).each do |reviewer| -%>
             <div class="<%= Issue.reviewer_post_it_css_class %>">
               <%= avatar(reviewer, :size => "14") %> <%= link_to_user reviewer %>
             </div>
