@@ -85,16 +85,20 @@ module Scrum
         def doers
           users = []
           users << assigned_to unless assigned_to.nil?
-          time_entries = TimeEntry.where(:issue_id => id,
-                                         :activity_id => Issue.doing_activities_ids)
-          users.concat(time_entries.collect{|t| t.user}).uniq.sort
+          time_entries = TimeEntry.where(
+            :issue_id => id, 
+            :activity_id => Issue.doing_activities_ids
+          ).order('created_on desc')
+          users.concat(time_entries.collect{|t| t.user}).uniq
         end
 
         def reviewers
           users = []
-          time_entries = TimeEntry.where(:issue_id => id,
-                                         :activity_id => Issue.reviewing_activities_ids)
-          users.concat(time_entries.collect{|t| t.user}).uniq.sort
+          time_entries = TimeEntry.where(
+            :issue_id => id, 
+            :activity_id => Issue.reviewing_activities_ids
+          ).order('created_on desc')
+          users.concat(time_entries.collect{|t| t.user}).uniq
         end
 
         def post_it_css_class(options = {})
