@@ -22,3 +22,20 @@ function draggableOnTouchScreen(element_id) {
 		element.addEventListener("touchcancel", touchHandler, true);
 	}
 }
+
+function createCalendarFor(element_id) {
+	var datepickerOptions ={ 
+	  dateFormat: 				'yy-mm-dd',
+	  showOn: 						'button',
+	  buttonImage: 				'/images/calendar.png', 
+	  buttonImageOnly: 		true,
+	  showButtonPanel: 		true, 
+	  showWeek: 					true, 
+	  showOtherMonths: 		true,
+	  changeMonth: 				true, 
+	  changeYear: 				true, 
+	  selectOtherMonths: 	true,
+	  beforeShow: 				beforeShowDatePicker
+	};
+	$(element_id).addClass('date').datepicker(datepickerOptions)
+}
