@@ -84,7 +84,6 @@ module Scrum
 
         def doers
           users = []
-          users << assigned_to unless assigned_to.nil?
           time_entries = TimeEntry.where(
             :issue_id => id, 
             :activity_id => Issue.doing_activities_ids
@@ -125,12 +124,16 @@ module Scrum
           classes.join(" ")
         end
 
+        def self.assignor_post_it_css_class
+          assignor_or_doer_or_reviewer_post_it_css_class(:assignor)
+        end
+
         def self.doer_post_it_css_class
-          doer_or_reviewer_post_it_css_class(:doer)
+          assignor_or_doer_or_reviewer_post_it_css_class(:doer)
         end
 
         def self.reviewer_post_it_css_class
-          doer_or_reviewer_post_it_css_class(:reviewer)
+          assignor_or_doer_or_reviewer_post_it_css_class(:reviewer)
         end
 
         def has_pending_effort?
@@ -218,7 +221,7 @@ module Scrum
         end
 
         def self.blocked_post_it_css_class
-          return doer_or_reviewer_post_it_css_class(:blocked)
+          return assignor_or_doer_or_reviewer_post_it_css_class(:blocked)
         end
 
         def move_pbi_to(position, other_pbi_id = nil)
@@ -324,9 +327,12 @@ module Scrum
           end
         end
 
-        def self.doer_or_reviewer_post_it_css_class(type)
+        def self.assignor_or_doer_or_reviewer_post_it_css_class(type)
           classes = ["post-it"]
           case type
+            when :assignor
+              classes << "assignor-post-it"
+              classes << Scrum::Setting.assignor_color
             when :doer
               classes << "doer-post-it"
               classes << Scrum::Setting.doer_color

@@ -92,6 +92,14 @@
       <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <%- end -%>
   </p>
+  <p>
+    <label><%= l(:label_assignor) %>:</label>
+    <%- colors.each_pair do |color_id, color_css_class| -%>
+      <%- selected = (color_css_class == Scrum::Setting.assignor_color) -%>
+      <%= radio_button_tag("settings[assignor_color]", color_css_class, selected) %>
+      <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <%- end -%>
+  </p>
 </fieldset>
 
 <fieldset>

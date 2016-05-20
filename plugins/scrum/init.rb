@@ -86,6 +86,7 @@ Redmine::Plugin.register :scrum do
                                  :pbi_tracker_ids => [],
                                  :reviewer_color => 'post-it-color-3',
                                  :blocked_color => 'post-it-color-6',
+                                 :assignor_color => 'post-it-color-2',
                                  :story_points_custom_field_id => nil,
                                  :blocked_custom_field_id => nil,
                                  :task_status_ids => [],

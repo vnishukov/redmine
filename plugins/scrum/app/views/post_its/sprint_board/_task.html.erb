@@ -27,12 +27,17 @@
         <%= render :partial => "post_its/sprint_board/custom_fields", :formats => [:html],
                    :locals => {:project => project, :issue => task} %>
         <div class="doers-reviewers-post-its-container">
+          <%- unless task.assigned_to.nil? -%>
+            <div class="<%= Issue.assignor_post_it_css_class %>">
+              <%= avatar(task.assigned_to, :size => "14") %> <%= link_to_user task.assigned_to %>
+            </div>
+          <%- end -%>
           <%- task.doers.first(1).each do |doer| -%>
             <div class="<%= Issue.doer_post_it_css_class %>">
               <%= avatar(doer, :size => "14") %> <%= link_to_user doer %>
             </div>
           <%- end -%>
-          <%- task.reviewers.first(3).each do |reviewer| -%>
+          <%- task.reviewers.first(2).each do |reviewer| -%>
             <div class="<%= Issue.reviewer_post_it_css_class %>">
               <%= avatar(reviewer, :size => "14") %> <%= link_to_user reviewer %>
             </div>

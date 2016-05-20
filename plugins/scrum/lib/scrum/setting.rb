@@ -20,7 +20,7 @@ module Scrum
       class_eval src, __FILE__, __LINE__
     end
 
-    ["doer_color", "reviewer_color", "blocked_color"].each do |setting|
+    ["doer_color", "reviewer_color", "blocked_color", "assignor_color"].each do |setting|
       src = <<-END_SRC
       def self.#{setting}
         setting_or_default(:#{setting})

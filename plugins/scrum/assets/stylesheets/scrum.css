@@ -366,11 +366,14 @@ table.sprint-pbi input, table.sprint-task input {
 	max-width: 9em;
 }
 
-.doer-post-it, .reviewer-post-it, .blocked-post-it {
+.doer-post-it, .reviewer-post-it, .blocked-post-it, .assignor-post-it {
 	height: 1.3em;
 	font-size: 0.8em;
 	margin-top: 2px;
 	text-align: left;
+}
+
+.assignor-post-it {	
 }
 
 .doer-post-it {
