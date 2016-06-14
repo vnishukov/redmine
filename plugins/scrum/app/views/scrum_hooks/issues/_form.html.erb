@@ -3,7 +3,7 @@
     <div class="splitcontentleft">
       <p>
         <%- sprints = @issue.project.sprints_and_product_backlog
-            options = options_for_select(sprints.collect {|sprint| [sprint.name, sprint.id]}, @issue.sprint_id) -%>
+            options = options_for_select(sprints.collect {|sprint| [sprint.name, sprint.id]}) -%>
         <%= form.select :sprint_id, options, :include_blank => true %>
       </p>
     </div>
