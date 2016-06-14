@@ -247,7 +247,7 @@ class ScrumController < ApplicationController
       @old_status = @issue.status
       update_attributes(@issue, params)
       @issue.save!
-      @issue.pending_effort = params[:issue][:pending_effort]
+      PendingEffort.create(issue_id: @issue.id, date: Time.now, effort: params[:issue][:pending_effort])
     rescue Exception => @exception
       logger.error("Exception: #{@exception.inspect}")
     end
