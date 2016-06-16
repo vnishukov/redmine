@@ -99,7 +99,7 @@ class SprintsController < ApplicationController
     task.status = IssueStatus.find(params[:status].to_i)
     raise "New status is not allowed" unless task.new_statuses_allowed_to.include?(task.status)
     task.save!
-    if Scrum::Setting.effort_reset_status_ids.include?(task.status.id) && task.pending_effort > 0
+    if Scrum::Setting.effort_reset_status_ids.include?(task.status.id) && task.pending_effort.to_i > 0
       PendingEffort.create(issue_id: task.id, date: Time.now, effort: 0)
     end
     render json: {new_status: task.status.name.downcase, new_pending_effort: task.pending_effort.to_s}
