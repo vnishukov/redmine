@@ -50,7 +50,7 @@ class SprintsController < ApplicationController
 
   def create
     raise "Product backlog is already set" if params[:create_product_backlog] and
-                                              !(@project.product_backlog.nil?)
+        !(@project.product_backlog.nil?)
     @sprint = Sprint.new(:user => User.current,
                          :project => @project,
                          :is_product_backlog => (!(params[:create_product_backlog].nil?)))
@@ -101,6 +101,16 @@ class SprintsController < ApplicationController
     task.save!
     if Scrum::Setting.effort_reset_status_ids.include?(task.status.id) && task.pending_effort.to_i > 0
       PendingEffort.create(issue_id: task.id, date: Time.now, effort: 0)
+    end
+    unless task.parent_id.blank?
+      parent = Issue.find_by_id(task.parent_id)
+      parent_issues_statuses_ids = Issue.all.where(parent_id: parent.id).collect(&:status_id).uniq
+      if parent_issues_statuses_ids.size.eql? 1
+        if Scrum::Setting.when_all_subtasks_status_id.eql? parent_issues_statuses_ids[0]
+          parent.status = IssueStatus.find(Scrum::Setting.user_story_move_status_id)
+          parent.save!
+        end
+      end
     end
     render json: {new_status: task.status.name.downcase, new_pending_effort: task.pending_effort.to_s}
   end
@@ -155,7 +165,7 @@ class SprintsController < ApplicationController
     ((@sprint.sprint_start_date)..(@sprint.sprint_end_date)).each do |date|
       if @sprint.efforts.where(["date = ?", date]).count > 0
         efforts = @sprint.efforts.where(["date >= ?", date])
-        estimated_effort = efforts.collect{|effort| effort.effort}.compact.sum
+        estimated_effort = efforts.collect { |effort| effort.effort }.compact.sum
         if date <= Date.today
           efforts = []
           @sprint.issues.each do |issue|
@@ -163,7 +173,7 @@ class SprintsController < ApplicationController
               efforts << issue.pending_efforts.where(["date <= ?", date]).last
             end
           end
-          pending_effort = efforts.compact.collect{|effort| effort.effort}.compact.sum
+          pending_effort = efforts.compact.collect { |effort| effort.effort }.compact.sum
         end
         date_label = "#{I18n.l(date, :format => :scrum_day)} #{date.day}"
         @data << {:day => date,
@@ -250,7 +260,7 @@ class SprintsController < ApplicationController
         end
       end
     end
-    @members_efforts = @members_efforts.values.sort{|a, b| a[:member] <=> b[:member]}
+    @members_efforts = @members_efforts.values.sort { |a, b| a[:member] <=> b[:member] }
 
     @sps_by_pbi_category, @sps_by_pbi_category_total = @sprint.sps_by_pbi_category
 
@@ -281,20 +291,20 @@ class SprintsController < ApplicationController
     render :nothing => true
   end
 
-private
+  private
 
   def init_members_efforts(members_efforts, member)
     unless members_efforts.include?(member.id)
       members_efforts[member.id] = {
-        :member => member,
-        :estimated_efforts => {
-          :days => {},
-          :total => 0.0
-        },
-        :done_efforts => {
-          :days => {},
-          :total => 0.0
-        }
+          :member => member,
+          :estimated_efforts => {
+              :days => {},
+              :total => 0.0
+          },
+          :done_efforts => {
+              :days => {},
+              :total => 0.0
+          }
       }
     end
   end

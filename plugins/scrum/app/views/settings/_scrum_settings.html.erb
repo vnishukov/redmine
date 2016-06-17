@@ -12,18 +12,18 @@
   <p>
     <label><%= l(:label_setting_story_points_custom_field) %>:</label>
     <%- custom_fields = CustomField.where(:type => "IssueCustomField", :field_format => ["int", "float", "string", "list"])
-        custom_fields = custom_fields.collect{|c| [c.name, c.id]}
+        custom_fields = custom_fields.collect { |c| [c.name, c.id] }
         options = options_for_select(custom_fields, Scrum::Setting.story_points_custom_field_id) -%>
     <%= select_tag "settings[story_points_custom_field_id]", options, :include_blank => true %>
   </p>
   <p>
     <label><%= l(:label_setting_blocked_custom_field) %>:</label>
     <%- custom_fields = CustomField.where(:type => "IssueCustomField", :field_format => ["bool"])
-        custom_fields = custom_fields.collect{|c| [c.name, c.id]}
+        custom_fields = custom_fields.collect { |c| [c.name, c.id] }
         options = options_for_select(custom_fields, Scrum::Setting.blocked_custom_field_id) -%>
     <%= select_tag "settings[blocked_custom_field_id]", options, :include_blank => true %>
   </p>
-  <%- trackers = Tracker.all.collect{|t| [t.name, t.id]} -%>
+  <%- trackers = Tracker.all.collect { |t| [t.name, t.id] } -%>
   <p>
     <label><%= l(:label_pbi_plural) %>:</label>
     <%- options = options_for_select(trackers, Scrum::Setting.pbi_tracker_ids) -%>
@@ -35,18 +35,18 @@
     <%= select_tag "settings[task_tracker_ids]", options, :multiple => true %>
   </p>
   <%- Tracker.all.each do |tracker| -%>
-    <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
-                    Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
-    <p id="fields_tracker_<%= tracker.id %>"
-       style="display: <%= included ? "block" : "none" %>;">
-      <label><%= l(:label_setting_fields_on_tracker, :tracker => tracker.name) %></label>
-      <%- fields = tracker.core_fields.collect{|f| [l("field_#{f}".sub(/_id$/, "")), f]}
-          options = options_for_select(fields, Scrum::Setting.tracker_fields(tracker.id)) -%>
-      <%= select_tag "settings[tracker_#{tracker.id}_fields]", options, :multiple => true %>
-      <%- custom_fields = tracker.custom_fields.collect{|f| [f.name, f.id]}
-          options = options_for_select(custom_fields, Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::CUSTOM_FIELDS)) -%>
-      <%= select_tag "settings[tracker_#{tracker.id}_custom_fields]", options, :multiple => true %>
-    </p>
+      <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
+          Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
+      <p id="fields_tracker_<%= tracker.id %>"
+         style="display: <%= included ? "block" : "none" %>;">
+        <label><%= l(:label_setting_fields_on_tracker, :tracker => tracker.name) %></label>
+        <%- fields = tracker.core_fields.collect { |f| [l("field_#{f}".sub(/_id$/, "")), f] }
+            options = options_for_select(fields, Scrum::Setting.tracker_fields(tracker.id)) -%>
+        <%= select_tag "settings[tracker_#{tracker.id}_fields]", options, :multiple => true %>
+        <%- custom_fields = tracker.custom_fields.collect { |f| [f.name, f.id] }
+            options = options_for_select(custom_fields, Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::CUSTOM_FIELDS)) -%>
+        <%= select_tag "settings[tracker_#{tracker.id}_custom_fields]", options, :multiple => true %>
+      </p>
   <%- end -%>
 </fieldset>
 
@@ -55,49 +55,49 @@
   <%- colors = {1 => "post-it-color-1", 2 => "post-it-color-2", 3 => "post-it-color-3",
                 4 => "post-it-color-4", 5 => "post-it-color-5", 6 => "post-it-color-6"}
       Tracker.all.each do |tracker| -%>
-    <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
-            Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
-    <p id="tracker_<%= tracker.id %>_color"
-       style="display: <%= included ? "block" : "none" %>;">
-      <label><%= tracker.name %>:</label>
-      <%- colors.each_pair do |color_id, color_css_class| -%>
-        <%- setting_name = "tracker_#{tracker.id}_color".to_sym
-            selected = (@settings[setting_name].nil? and (color_id == 1)) ? true : (@settings[setting_name] == color_css_class) -%>
-        <%= radio_button_tag("settings[#{setting_name}]", color_css_class, selected) %>
-        <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      <%- end -%>
-    </p>
+      <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
+          Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
+      <p id="tracker_<%= tracker.id %>_color"
+         style="display: <%= included ? "block" : "none" %>;">
+        <label><%= tracker.name %>:</label>
+        <%- colors.each_pair do |color_id, color_css_class| -%>
+            <%- setting_name = "tracker_#{tracker.id}_color".to_sym
+                selected = (@settings[setting_name].nil? and (color_id == 1)) ? true : (@settings[setting_name] == color_css_class) -%>
+            <%= radio_button_tag("settings[#{setting_name}]", color_css_class, selected) %>
+            <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <%- end -%>
+      </p>
   <%- end -%>
   <p>
     <label><%= l(:label_doer) %>:</label>
     <%- colors.each_pair do |color_id, color_css_class| -%>
-      <%- selected = (color_css_class == Scrum::Setting.doer_color) -%>
-      <%= radio_button_tag("settings[doer_color]", color_css_class, selected) %>
-      <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <%- selected = (color_css_class == Scrum::Setting.doer_color) -%>
+        <%= radio_button_tag("settings[doer_color]", color_css_class, selected) %>
+        <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <%- end -%>
   </p>
   <p>
     <label><%= l(:label_reviewer) %>:</label>
     <%- colors.each_pair do |color_id, color_css_class| -%>
-      <%- selected = (color_css_class == Scrum::Setting.reviewer_color) -%>
-      <%= radio_button_tag("settings[reviewer_color]", color_css_class, selected) %>
-      <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <%- selected = (color_css_class == Scrum::Setting.reviewer_color) -%>
+        <%= radio_button_tag("settings[reviewer_color]", color_css_class, selected) %>
+        <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <%- end -%>
   </p>
   <p>
     <label><%= l(:label_blocked) %>:</label>
     <%- colors.each_pair do |color_id, color_css_class| -%>
-      <%- selected = (color_css_class == Scrum::Setting.blocked_color) -%>
-      <%= radio_button_tag("settings[blocked_color]", color_css_class, selected) %>
-      <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <%- selected = (color_css_class == Scrum::Setting.blocked_color) -%>
+        <%= radio_button_tag("settings[blocked_color]", color_css_class, selected) %>
+        <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <%- end -%>
   </p>
   <p>
     <label><%= l(:label_assignor) %>:</label>
     <%- colors.each_pair do |color_id, color_css_class| -%>
-      <%- selected = (color_css_class == Scrum::Setting.assignor_color) -%>
-      <%= radio_button_tag("settings[assignor_color]", color_css_class, selected) %>
-      <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <%- selected = (color_css_class == Scrum::Setting.assignor_color) -%>
+        <%= radio_button_tag("settings[assignor_color]", color_css_class, selected) %>
+        <span class="post-it settings-post-it <%= color_css_class %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <%- end -%>
   </p>
 </fieldset>
@@ -106,25 +106,38 @@
   <legend><%= l(:label_sprint_board) %></legend>
   <p>
     <label><%= l(:label_setting_task_statuses) %>:</label>
-    <%- statuses = IssueStatus.all.collect{|s| [s.name, s.id]} -%>
+    <%- statuses = IssueStatus.all.collect { |s| [s.name, s.id] } -%>
     <%- options = options_for_select(statuses, Scrum::Setting.task_status_ids) -%>
     <%= select_tag "settings[task_status_ids]", options, :multiple => true %>
   </p>
   <p>
     <label><%= l(:label_setting_pbi_statuses) %>:</label>
-    <%- statuses = IssueStatus.all.collect{|s| [s.name, s.id]} -%>
+    <%- statuses = IssueStatus.all.collect { |s| [s.name, s.id] } -%>
     <%- options = options_for_select(statuses, Scrum::Setting.pbi_status_ids) -%>
     <%= select_tag "settings[pbi_status_ids]", options, :multiple => true %>
   </p>
   <p>
     <label><%= l(:label_setting_pending_reset_statuses) %>:</label>
-    <%- statuses = IssueStatus.all.collect{|s| [s.name, s.id]} -%>
+    <%- statuses = IssueStatus.all.collect { |s| [s.name, s.id] } -%>
     <%- options = options_for_select(statuses, Scrum::Setting.effort_reset_status_ids) -%>
     <%= select_tag "settings[effort_reset_status_ids]", options, :multiple => true %>
   </p>
+  <p style="float: left">
+    <label><%= l(:label_setting_move_user_story_to_status) %>:</label>
+    <%- statuses = IssueStatus.all.collect { |s| [s.name, s.id] } -%>
+    <%- options = options_for_select(statuses, Scrum::Setting.user_story_move_status_id) -%>
+    <%= select_tag "settings[user_story_move_status_id]", options, :multiple => false %>
+    <br>
+    <label><%= l(:label_setting_when_all_subtasks_in_status) %>:</label>
+    <%- options = options_for_select(statuses, Scrum::Setting.when_all_subtasks_status_id) -%>
+    <%= select_tag "settings[when_all_subtasks_status_id]", options, :multiple => false %>
+  </p>
+  <p style="display: inline-block; cursor: default; font-size: 2.5em; padding: 12px 0 0px 0; margin-bottom: -25px;">
+    ]
+  </p>
   <p>
     <label><%= l(:label_setting_verification_activities) %>:</label>
-    <%- activities = Enumeration.where(:type => "TimeEntryActivity").collect{|s| [s.name, s.id]} -%>
+    <%- activities = Enumeration.where(:type => "TimeEntryActivity").collect { |s| [s.name, s.id] } -%>
     <%- options = options_for_select(activities, Scrum::Setting.verification_activity_ids) -%>
     <%= select_tag "settings[verification_activity_ids]", options, :multiple => true %>
   </p>
@@ -176,22 +189,22 @@
                       Scrum::Setting.render_tasks_speed) %>
   </p>
   <%- Tracker.all.each do |tracker| -%>
-    <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
-                    Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
-    <p id="sprint_board_fields_tracker_<%= tracker.id %>"
-       style="display: <%= included ? "block" : "none" %>;">
-      <label><%= l(:label_setting_sprint_board_fields_on_tracker, :tracker => tracker.name) %></label>
-      <%- fields = Scrum::Setting.sprint_board_fields_for_tracker(tracker)
-          fields.collect!{|f| [l("field_#{f}".sub(/_id$/, "")), f]}
-          values = Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::SPRINT_BOARD_FIELDS)
-          options = options_for_select(fields, values) -%>
-      <%= select_tag("settings[tracker_#{tracker.id}_sprint_board_fields]", options, :multiple => true) %>
-      <%- custom_fields = Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::CUSTOM_FIELDS).collect{|f| [CustomField.find(f).name, CustomField.find(f).id]}
-          custom_fields = tracker.custom_fields.collect{|f| [f.name, f.id]}
-          values = Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::SPRINT_BOARD_CUSTOM_FIELDS)
-          options = options_for_select(custom_fields, values) -%>
-      <%= select_tag("settings[tracker_#{tracker.id}_sprint_board_custom_fields]", options, :multiple => true) %>
-    </p>
+      <%- included = (Scrum::Setting.pbi_tracker_ids.include?(tracker.id) or
+          Scrum::Setting.task_tracker_ids.include?(tracker.id)) -%>
+      <p id="sprint_board_fields_tracker_<%= tracker.id %>"
+         style="display: <%= included ? "block" : "none" %>;">
+        <label><%= l(:label_setting_sprint_board_fields_on_tracker, :tracker => tracker.name) %></label>
+        <%- fields = Scrum::Setting.sprint_board_fields_for_tracker(tracker)
+            fields.collect! { |f| [l("field_#{f}".sub(/_id$/, "")), f] }
+            values = Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::SPRINT_BOARD_FIELDS)
+            options = options_for_select(fields, values) -%>
+        <%= select_tag("settings[tracker_#{tracker.id}_sprint_board_fields]", options, :multiple => true) %>
+        <%- custom_fields = Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::CUSTOM_FIELDS).collect { |f| [CustomField.find(f).name, CustomField.find(f).id] }
+            custom_fields = tracker.custom_fields.collect { |f| [f.name, f.id] }
+            values = Scrum::Setting.tracker_fields(tracker.id, Scrum::Setting::TrackerFields::SPRINT_BOARD_CUSTOM_FIELDS)
+            options = options_for_select(custom_fields, values) -%>
+        <%= select_tag("settings[tracker_#{tracker.id}_sprint_board_custom_fields]", options, :multiple => true) %>
+      </p>
   <%- end -%>
 </fieldset>
 

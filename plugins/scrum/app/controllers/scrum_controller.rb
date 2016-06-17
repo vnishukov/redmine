@@ -247,7 +247,17 @@ class ScrumController < ApplicationController
       @old_status = @issue.status
       update_attributes(@issue, params)
       @issue.save!
-      PendingEffort.create(issue_id: @issue.id, date: Time.now, effort: params[:issue][:pending_effort])
+      @issue.pending_effort = params[:issue][:pending_effort]
+      unless @issue.parent_id.blank?
+        parent = Issue.find_by_id(@issue.parent_id)
+        parent_issues_statuses_ids = Issue.all.where(parent_id: parent.id).collect(&:status_id).uniq
+        if parent_issues_statuses_ids.size.eql? 1
+          if Scrum::Setting.when_all_subtasks_status_id.eql? parent_issues_statuses_ids[0]
+            parent.status = IssueStatus.find(Scrum::Setting.user_story_move_status_id)
+            parent.save!
+          end
+        end
+      end
     rescue Exception => @exception
       logger.error("Exception: #{@exception.inspect}")
     end

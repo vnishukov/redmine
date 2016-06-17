@@ -9,9 +9,9 @@ module Scrum
   class Setting
 
     ["create_journal_on_pbi_position_change", "inherit_pbi_attributes", "render_position_on_pbi",
-      "render_category_on_pbi", "render_version_on_pbi", "render_author_on_pbi",
-      "render_updated_on_pbi", "check_dependencies_on_pbi_sorting",
-      "render_pbis_speed", "adjust_effort_automatically", "render_tasks_speed", "render_plugin_tips"].each do |setting|
+     "render_category_on_pbi", "render_version_on_pbi", "render_author_on_pbi",
+     "render_updated_on_pbi", "check_dependencies_on_pbi_sorting",
+     "render_pbis_speed", "adjust_effort_automatically", "render_tasks_speed", "render_plugin_tips"].each do |setting|
       src = <<-END_SRC
       def self.#{setting}
         setting_or_default_boolean(:#{setting})
@@ -29,11 +29,20 @@ module Scrum
       class_eval src, __FILE__, __LINE__
     end
 
-    ["task_status_ids", "task_tracker_ids", "pbi_status_ids", "effort_reset_status_ids", "pbi_tracker_ids",
-      "verification_activity_ids"].each do |setting|
+    ["task_status_ids", "task_tracker_ids", "pbi_status_ids", "effort_reset_status_ids","pbi_tracker_ids",
+     "verification_activity_ids"].each do |setting|
       src = <<-END_SRC
       def self.#{setting}
         collect_ids(:#{setting})
+      end
+      END_SRC
+      class_eval src, __FILE__, __LINE__
+    end
+
+    ["user_story_move_status_id", "when_all_subtasks_status_id"].each do |setting|
+      src = <<-END_SRC
+      def self.#{setting}
+        collect_id(:#{setting})
       end
       END_SRC
       class_eval src, __FILE__, __LINE__
@@ -91,11 +100,11 @@ module Scrum
       setting_or_default_integer(:high_speed, :min => 101, :max => 10000)
     end
 
-  private
+    private
 
     def self.setting_or_default(setting)
       ::Setting.plugin_scrum[setting] ||
-      Redmine::Plugin::registered_plugins[:scrum].settings[:default][setting]
+          Redmine::Plugin::registered_plugins[:scrum].settings[:default][setting]
     end
 
     def self.setting_or_default_boolean(setting)
@@ -110,7 +119,11 @@ module Scrum
     end
 
     def self.collect_ids(setting)
-      (::Setting.plugin_scrum[setting] || []).collect{|value| value.to_i}
+      (::Setting.plugin_scrum[setting] || []).collect { |value| value.to_i }
+    end
+
+    def self.collect_id(setting)
+      (::Setting.plugin_scrum[setting] || '').to_i
     end
 
     def self.collect(setting)

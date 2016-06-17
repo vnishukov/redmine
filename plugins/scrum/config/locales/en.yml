@@ -88,6 +88,8 @@ en:
   label_setting_verification_activities: "Verification activities"
   label_setting_adjust_effort_automatically: "Adjust task effort automatically"
   label_setting_pending_reset_statuses: "Set pending effort to 0 when move to statuses"
+  label_setting_move_user_story_to_status: "Move user story status to"
+  label_setting_when_all_subtasks_in_status: "When all subtasks in status"
   label_scrum: "Scrum"
   label_sprint: "Sprint"
   label_sprint_board: "Sprint board"

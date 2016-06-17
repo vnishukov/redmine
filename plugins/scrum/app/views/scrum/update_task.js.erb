@@ -19,4 +19,5 @@
     task.detach();
     task.appendTo($("#<%= "pbi_#{@issue.parent_id}_status_#{@issue.status.id}" %>"));
   <%- end -%>
+location.reload();
 <%- end -%>

@@ -22,6 +22,7 @@
 							if ($.isFunction($.fn.hideOnLoad)) {
 								hideOnLoad();
 							}
+							location.reload();
 						},
 						success: function(response) {
 							ui.draggable.attr("old-status", "<%= status.id %>");
