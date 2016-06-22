@@ -83,8 +83,8 @@ class ScrumController < ApplicationController
 
       if time_entry_params[:adjust_effort].present?
         is_manual = (time_entry_params[:adjust_effort] == 'manual')
-        effort = is_manual ? time_entry_params[:pending_efforts].to_f : @issue.pending_effort - time_entry_params[:hours].to_f
-        if @issue.pending_effort > 0 || (is_manual && effort > 0)
+        effort = is_manual ? time_entry_params[:pending_efforts].to_f : @issue.pending_effort.to_f - time_entry_params[:hours].to_f
+        if @issue.pending_effort.to_f > 0 || (is_manual && effort > 0)
           PendingEffort.create(issue_id: @issue.id, date: Time.now, effort: effort > 0 ? effort : 0)
         end
       end

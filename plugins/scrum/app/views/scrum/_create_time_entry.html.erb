@@ -1,60 +1,60 @@
 <h3 class="title"><%= l(:field_time_entries) %></h3>
 
-<div id="messages" />
+<div id="messages"/>
 <%= form_for :time_entry, :url => create_scrum_time_entry_path(@issue), :remote => true do |f| %>
-  <%= back_url_hidden_field_tag %>
-  <%= error_messages_for 'time_entry' %>
-  <%= hidden_field_tag :pbi_status_id, @pbi_status_id %>
-  <%= hidden_field_tag :other_pbi_status_ids, @other_pbi_status_ids %>
-  <%= hidden_field_tag :task_id, @task_id %>
-  <div class="box tabular">
-    <p>
-      <label><%= l(:field_hours) %>:</label>
-      <%= f.text_field :hours, :size => 15, :required => true %>
-    </p>
-
-    <p>
-      <label><%= l(:field_pending_effort) %>:</label>
-      <%= f.radio_button 'adjust_effort', 'automatically', checked: Scrum::Setting.adjust_effort_automatically %><%= l(:label_adjust_effort_automatically) %>
-      <br>
-      <%= f.radio_button 'adjust_effort', 'manual', checked: !Scrum::Setting.adjust_effort_automatically %><%= l(:label_manual_set_effort_to) %>
-      <%= f.text_field :pending_efforts, :value => @issue.pending_effort, :size => 3, :required => true %>
-      <%= l(:field_hours).downcase %>
-    </p>
-
-    <p>
-      <label><%= l(:field_spent_on) %>:</label>
-      <%= f.text_field :spent_on, :size => 10, :value => Date.today, :required => true %>
-    </p>
-
-    <p>
-      <label><%= l(:field_comments) %>:</label>
-      <%= f.text_field :comments, :size => 15, :maxlength => 255 %>
-    </p>
-
-    <p>
-      <label><%= l(:field_activity) %>:</label>
-      <%= f.select :activity_id,
-                    @project.activities.collect{|activity| [activity.name, activity.id]},
-                    :required => true %>
-    </p>
-
-    <p>
-      <label><%= l(:field_user) %>:</label>
-      <%= f.select :user_id,
-                    principals_options_for_select(@issue.assignable_users, @issue.assigned_to),
-                    :required => true %>
-    </p>
-
-    <%- TimeEntry.new.custom_field_values.each do |value| -%>
+    <%= back_url_hidden_field_tag %>
+    <%= error_messages_for 'time_entry' %>
+    <%= hidden_field_tag :pbi_status_id, @pbi_status_id %>
+    <%= hidden_field_tag :other_pbi_status_ids, @other_pbi_status_ids %>
+    <%= hidden_field_tag :task_id, @task_id %>
+    <div class="box tabular">
       <p>
-        <label><%= value.custom_field.name %>:</label>
-        <%= custom_field_tag :time_entry, value %>
+        <label><%= l(:field_hours) %>:</label>
+        <%= f.text_field :hours, :size => 15, :required => true %>
       </p>
-    <%- end -%>
 
-    <p>
-      <%= submit_tag l(:button_save) %>
-    </p>
-  </div>
+      <p>
+        <label><%= l(:field_pending_effort) %>:</label>
+        <%= f.radio_button 'adjust_effort', 'automatically', checked: Scrum::Setting.adjust_effort_automatically %><%= l(:label_adjust_effort_automatically) %>
+        <br>
+        <%= f.radio_button 'adjust_effort', 'manual', checked: !Scrum::Setting.adjust_effort_automatically %><%= l(:label_manual_set_effort_to) %>
+        <%= f.text_field :pending_efforts, :value => @issue.pending_effort, :size => 3 %>
+        <%= l(:field_hours).downcase %>
+      </p>
+
+      <p>
+        <label><%= l(:field_spent_on) %>:</label>
+        <%= f.text_field :spent_on, :size => 10, :value => Date.today, :required => true %>
+      </p>
+
+      <p>
+        <label><%= l(:field_comments) %>:</label>
+        <%= f.text_field :comments, :size => 15, :maxlength => 255 %>
+      </p>
+
+      <p>
+        <label><%= l(:field_activity) %>:</label>
+        <%= f.select :activity_id,
+                     @project.activities.collect { |activity| [activity.name, activity.id] },
+                     :include_blank => true, :required => true %>
+      </p>
+
+      <p>
+        <label><%= l(:field_user) %>:</label>
+        <%= f.select :user_id,
+                     principals_options_for_select(@issue.assignable_users, @issue.assigned_to),
+                     :required => true %>
+      </p>
+
+      <%- TimeEntry.new.custom_field_values.each do |value| -%>
+          <p>
+            <label><%= value.custom_field.name %>:</label>
+            <%= custom_field_tag :time_entry, value %>
+          </p>
+      <%- end -%>
+
+      <p>
+        <%= submit_tag l(:button_save) %>
+      </p>
+    </div>
 <% end %>
