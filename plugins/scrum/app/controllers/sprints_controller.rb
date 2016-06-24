@@ -102,7 +102,7 @@ class SprintsController < ApplicationController
     if Scrum::Setting.effort_reset_status_ids.include?(task.status.id) && task.pending_effort.to_i > 0
       PendingEffort.create(issue_id: task.id, date: Time.now, effort: 0)
     end
-    unless task.parent_id.blank?
+    unless task.parent_id.to_i.zero? || Scrum::Setting.user_story_move_status_id.to_i.zero? || Scrum::Setting.when_all_subtasks_status_id.to_i.zero?
       parent = Issue.find_by_id(task.parent_id)
       parent_issues_statuses_ids = Issue.all.where(parent_id: parent.id).collect(&:status_id).uniq
       if parent_issues_statuses_ids.size.eql? 1

@@ -124,7 +124,8 @@
   </p>
   <p style="float: left">
     <label><%= l(:label_setting_move_user_story_to_status) %>:</label>
-    <%- statuses = IssueStatus.all.collect { |s| [s.name, s.id] } -%>
+    <%- statuses = [['N/A', nil]] -%>
+    <%- IssueStatus.all.collect { |s| statuses << [s.name, s.id] } -%>
     <%- options = options_for_select(statuses, Scrum::Setting.user_story_move_status_id) -%>
     <%= select_tag "settings[user_story_move_status_id]", options, :multiple => false %>
     <br>
